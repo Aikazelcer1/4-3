@@ -1,72 +1,82 @@
-from datastruct.node import Node
+from datastruct.Node import Node
 
 
 class LinkedList:
-   
+
 
     def __init__(self):
+        self.head = None
+        self.tail = None
 
-        self.__first_node = None
-        self.__last_node = None
+    def insert_beginning(self, data: dict) -> None:
 
-    def __str__(self) -> str:
-        result = ''
-        current_node = self.__first_node
-        while current_node is not None:
-            result += str(current_node.data) + ' -> '
-            current_node = current_node.next_node
+        check_data = self.check_data(data)
+        if check_data is not None:
+            new_node = Node(check_data)
+            if self.head is None:
+                self.head = new_node
+                self.tail = new_node
+            else:
+                new_node.next_node = self.head
+                self.head = new_node
+
+    def insert_at_end(self, data: dict) -> None:
+
+        check_data = self.check_data(data)
+        if check_data is not None:
+            new_node = Node(check_data)
+            if self.head is None:
+                self.head = new_node
+                self.tail = new_node
+            else:
+                self.tail.next_node = new_node
+                self.tail = new_node
+
+    @staticmethod
+    def check_data(data):
+
+        try:
+            if not isinstance(data, dict):
+                raise TypeError
+            else:
+                if 'id' not in list(data.keys()):
+                    raise TypeError
+        except TypeError:
+            print('Данные не являются словарем или в словаре нет id.')
         else:
-            result += 'None'
-        return result
+            return data
 
-    @property
-    def first_node(self) -> Node:
+    def print_ll_(self):
 
-        return self.__first_node
+        ll_string = ''
+        node = self.head
+        if node is None:
+            return None
+        while node:
+            ll_string += f'{str(node.data)} -> '
+            node = node.next_node
 
-    @property
-    def last_node(self) -> Node:
-
-        return self.__last_node
-
-    def insert_beginning(self, data) -> None:
-
-        new_node = Node(data=data)
-        if self.__first_node is None:
-            self.__first_node = new_node
-            self.__last_node = new_node
-        else:
-            new_node.next_node = self.__first_node
-            self.__first_node = new_node
-
-    def insert_at_end(self, data) -> None:
-
-        new_node = Node(data=data)
-        if self.__first_node is None:
-            self.__first_node = new_node
-            self.__last_node = new_node
-        else:
-            self.__last_node.next_node = new_node
-            self.__last_node = new_node
+        ll_string += 'None'
+        return ll_string
 
     def to_list(self):
 
-        data = []
-        current_node = self.__first_node
-        while current_node is not None:
-            data.append(current_node.data)
-            current_node = current_node.next_node
-        return data
+        ll_list = []
+        node = self.head
+        if node is None:
+            return None
+        while node:
+            ll_list.append(node.data)
+            node = node.next_node
+        return ll_list
 
-    def get_data_by_id(self, value_id: int) -> dict | None:
+    def get_data_by_id(self, value):
 
-        current_node = self.__first_node
-        while current_node is not None:
-            try:
-                if current_node.data.get('id') == value_id:
-                    return current_node.data
-                current_node = current_node.next_node
-            except AttributeError:
-                print('Данные не являются словарем или в словаре нет id.')
-                break
-        return None
+        try:
+            ll_list = self.to_list()
+            for item in ll_list:
+                if item['id'] == value:
+                    return item
+            raise ValueError
+        except ValueError:
+            return None
